@@ -1,8 +1,14 @@
 import { generateNanoId } from "../utils/helper.js";
 import urlschema from "../models/shorturl.model.js";
+import { saveShortUrl } from "../dao/shortUrl.js";
 
-export const createShortUrlservice = async  (url) => {
+export const createShortUrlWithoutUser  = async  (url) => {
     const shortUrl = await generateNanoId(7);
-
+    await saveShortUrl(shortUrl, url);
+      return shortUrl;
+}
+export const createShortUrlWithUser  = async  (url,userId) => {
+    const shortUrl = await generateNanoId(7);
+    await saveShortUrl(shortUrl, url,userId);
       return shortUrl;
 }
