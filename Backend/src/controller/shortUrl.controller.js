@@ -6,14 +6,17 @@ import {
 import wrapAsync from "../utils/tryCatchRapper.js";
 
 export const createShortUrl = wrapAsync(async (req, res, next) => {
-  const { url } = req.body;
+  const data = req.body;
+  let shortUrl;
+  console.log("Creating short URL for:", req.user);
   if(req.user){
-    const shortUrl = await createShortUrlWithUser(url, req.user._id);
+     shortUrl = await createShortUrlWithUser(data.url, req.user._id, data.slug);
   }else{
-    const shortUrl = await createShortUrlWithoutUser(url);
+     shortUrl = await createShortUrlWithoutUser(data.url);
   }
   res.status(200).json({shortUrl: process.env.APP_URL + shortUrl});
 });
+
 
 export const redirectFromShortUrl = wrapAsync(async (req, res, next) => {
   const { id } = req.params;

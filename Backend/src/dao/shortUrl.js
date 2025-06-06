@@ -27,3 +27,7 @@ export const getShortUrl = async (shortUrl) => {
     { $inc: { clicks: 1 } }
   );
 };
+
+export const getCustomShortUrl = async (slug) => {
+    return await urlschema.findOne({ short_url: slug });
+}

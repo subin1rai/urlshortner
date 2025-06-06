@@ -19,7 +19,7 @@ export const loginUser = async (email, password) => {
     console.log(user)
     if(!user || user.password !== password) {
         throw new ConflictError("Invalid credentials");
-    }
+    } 
     const token = await signToken({ id: user._id });
-    return token;
+    return {token,user};
 }
