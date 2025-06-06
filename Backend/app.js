@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config("./.env");
 import connectDB from "./src/config/monogos.config.js";
 import shortUrl from "./src/routes/shortUrl.route.js";
+import auth_routes from "./src/routes/auth.route.js";
 import { redirectFromShortUrl } from "./src/controller/shortUrl.controller.js";
 import { errrorHandler } from "./src/utils/errorHandler.js";
 import cors from "cors";
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/create", shortUrl);
+app.use("/api/auth", auth_routes);
 
 app.get("/:id", redirectFromShortUrl);
 app.use(errrorHandler);

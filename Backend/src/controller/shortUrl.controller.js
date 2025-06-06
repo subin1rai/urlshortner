@@ -7,8 +7,12 @@ import wrapAsync from "../utils/tryCatchRapper.js";
 
 export const createShortUrl = wrapAsync(async (req, res, next) => {
   const { url } = req.body;
-  const shortUrl = await createShortUrlWithoutUser(url);
-  res.send(process.env.APP_URL + shortUrl);
+  if(req.user){
+    const shortUrl = await createShortUrlWithUser(url, req.user._id);
+  }else{
+    const shortUrl = await createShortUrlWithoutUser(url);
+  }
+  res.status(200).json({shortUrl: process.env.APP_URL + shortUrl});
 });
 
 export const redirectFromShortUrl = wrapAsync(async (req, res, next) => {
@@ -18,4 +22,10 @@ export const redirectFromShortUrl = wrapAsync(async (req, res, next) => {
     throw new Error("Short URL not found");
   }
   res.redirect(url.full_url);
+});
+
+export const customCreateShortUrl =wrapAsync(async (req,res)=>{
+    const {url, slug} = req.body;
+    const shortUrl = await createShortUrlWithOutUser(url, customUrl);
+    res.status(200).json({shortUrl: process.env.APP_URL + shortUrl});
 });
