@@ -12,7 +12,12 @@ import cookieParser from "cookie-parser";
 const app = express();
 app.use(express.json());
 //cors
-app.use(cors());
+app.use(cors(
+  {
+    origin: process.env.ORIGIN_URL,
+    credentials: true,
+  }
+));
 
 app.use(cookieParser());
 app.use(attachedUser)
