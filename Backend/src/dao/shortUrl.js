@@ -3,6 +3,7 @@ import { ConflictError } from "../utils/errorHandler.js";
 
 export const saveShortUrl = async (shortUrl, longUrl, userId) => {
   try {
+    
     const newurl = new urlschema({
       full_url: longUrl,
       short_url: shortUrl,
@@ -21,7 +22,6 @@ export const saveShortUrl = async (shortUrl, longUrl, userId) => {
 };
 
 export const getShortUrl = async (shortUrl) => {
-  console.log(shortUrl);
   return await urlschema.findOneAndUpdate(
     { short_url: shortUrl },
     { $inc: { clicks: 1 } }
@@ -30,4 +30,8 @@ export const getShortUrl = async (shortUrl) => {
 
 export const getCustomShortUrl = async (slug) => {
     return await urlschema.findOne({ short_url: slug });
+}
+
+export const getShortUrlByUserId = async (userId) => {
+  return await urlschema.find({ user: userId });
 }
