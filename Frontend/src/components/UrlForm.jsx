@@ -2,14 +2,21 @@
 import { useState } from "react"
 import { createShortUrl } from "../api/shortUrl.app"
 
+import { useSelector } from "react-redux"
+import {  QueryClient } from "@tanstack/react-query"
+
 const UrlForm = () => {
   const [url, setUrl] = useState("")
   const [shortUrl, setShortUrl] = useState("")
   const [copied, setCopied] = useState(false)
+  const [customSlug, setCustomSlug ] = useState("");
+
+  const {isAuthenticated }= useSelector((state) => state.auth);
 
   const handlesubmit = async () => {
-    const shortUrl = await createShortUrl(url)
+    const shortUrl = await createShortUrl(url, customSlug)
     setShortUrl(shortUrl)
+    QueryClient.invalidateQueries({queryKey: ["userUrls"]})
   }
 
   const handleCopy = () => {
@@ -45,7 +52,37 @@ const UrlForm = () => {
             className="w-full pl-12 pr-4 py-4 text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
           />
         </div>
+
+      
+{isAuthenticated && (
+    <div>
+      <label htmlFor="url" className="block text-sm font-semibold text-gray-700">
+        Enter your URL
+      </label>
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="customSlug"
+          value={customSlug}
+          onChange={(e)=> setCustomSlug(e.target.value)}
+          placeholder="Enter custom URL"
+           className="w-full pl-12 pr-4 py-4 text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+        />
       </div>
+    </div>
+)}
+      </div>
+          
 
       <button
         onClick={handlesubmit}

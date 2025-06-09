@@ -1,4 +1,23 @@
- const Navbar = () => {
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/slice/authSlice";
+import { logoutUser } from "../api/user.api";
+import { useNavigate } from "@tanstack/react-router";
+
+const Navbar = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      dispatch(logout());
+      navigate({ to: "/" });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <nav className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +43,7 @@
           </div>
 
           {/* Navigation Links - Hidden on mobile, shown on larger screens */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* <div className="hidden md:flex items-center space-x-8">
             <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors duration-200">
               Features
             </a>
@@ -34,20 +53,33 @@
             <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors duration-200">
               About
             </a>
-          </div>
+          </div> */}
 
-          {/* Login Button */}
+          {/* Auth Section - Conditionally render based on authentication status */}
           <div className="flex items-center space-x-4">
-            {/* Mobile menu button - shown only on mobile */}
-            <button className="md:hidden p-2 rounded-lg text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors duration-200">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-
-            {/* Login Button */}
-            <button className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
-              <div className="flex items-center space-x-2">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-700 font-medium text-sm md:text-lg">Hi, {user?.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <a
+                href="/auth"
+                className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+              >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -57,35 +89,14 @@
                   />
                 </svg>
                 <span>Login</span>
-              </div>
-            </button>
+              </a>
+            )}
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation Menu - Hidden by default, can be toggled */}
-      <div className="md:hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-md">
-        <div className="px-4 py-3 space-y-2">
-          <a
-            href="#"
-            className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg font-medium transition-colors duration-200"
-          >
-            Features
-          </a>
-          <a
-            href="#"
-            className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg font-medium transition-colors duration-200"
-          >
-            Pricing
-          </a>
-          <a
-            href="#"
-            className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg font-medium transition-colors duration-200"
-          >
-            About
-          </a>
-        </div>
-      </div>
+     
     </nav>
   )
 }

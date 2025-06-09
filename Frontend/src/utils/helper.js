@@ -1,26 +1,31 @@
-
-import{ redirect} from "@tanstack/react-router";
-import { me } from "../api/user.api";
+import { redirect } from "@tanstack/react-router";
+import { getCurrentUser } from "../api/user.api";
 import { login } from "../store/slice/authSlice";
 
-export const checkAuth = async ({context})=>{
-    try {
-        const {store ,queryClient}= context.store;
-        //tanstack query
-        const user = await queryClient.ensureQueryData({
-            queryKey:["currentUser"],
-            queryFn:me,
-            retry: false
-        });
-        store.dispatch(login(user));
-        const auth = store.getState().auth;
-        if(!auth.isAuthenticated) return false;
-        return true;
-    } catch (error) {
 
-        redirect({
-            to:"/"
-        })
+export const checkAuth = async ({ context }) => {
+  try {
+    const { store, queryClient } = context;
+    
+    // Add debug logging
+    
+    // Use queryClient to fetch current user
+    const userData = await queryClient.ensureQueryData({
+      queryKey: ["currentUser"],
+      queryFn: getCurrentUser,
+      retry: false
+    });
+    
+    
+    if (userData && userData.user) {
+      // Dispatch the setUser action to update Redux store
+      store.dispatch(login(userData.user));
+      return true;
     }
-       
-} 
+    
+    return false;
+  } catch (error) {
+    console.error("Authentication check failed:", error);
+    return redirect({ to: "/auth" });
+  }
+};
