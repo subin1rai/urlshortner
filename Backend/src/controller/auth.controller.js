@@ -21,3 +21,7 @@ export const login = wrapAsync(async (req, res) => {
     .status(200)
     .json({ user: user, message: "successfully logged in" });
 });
+
+export const me = wrapAsync(async (req, res) => {
+  return res.status(200).json({ user: req.user });
+});
