@@ -138,6 +138,9 @@ const UserUrl = () => {
                           {url.full_url}
                         </div>
                       </td>
+                      {/* </td> */}
+                      
+
                       <td className="px-6 py-4">
                         <a
                           href={url.short_url}
