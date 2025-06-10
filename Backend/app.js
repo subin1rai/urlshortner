@@ -12,6 +12,18 @@ import { attachedUser } from "./src/utils/attachedUser.js";
 import cookieParser from "cookie-parser";
 const app = express();
 app.use(express.json());
+
+// Add proper MIME type for JavaScript modules
+app.use(express.static('public', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.mjs')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+}));
+
 //cors
 app.use(cors(
   {
