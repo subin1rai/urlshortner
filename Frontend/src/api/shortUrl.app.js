@@ -5,4 +5,5 @@ export const createShortUrl = async (url,slug) => {
     url,slug
   });
   return data.shortUrl;
+  // return data.shortUrl;
 };
